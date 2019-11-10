@@ -13,13 +13,8 @@ namespace ToDoBot
     {
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            foreach (var member in membersAdded)
-            {
-                if (member.Id != turnContext.Activity.Recipient.Id)
-                {
-                    await turnContext.SendActivityAsync(MessageFactory.Text($"Hello world!"), cancellationToken);
-                }
-            }
+            var reply = MessageFactory.Attachment(ChoiceTimeCard.GetCard().ToAttachment());
+            await turnContext.SendActivityAsync(reply, cancellationToken);
         }
     }
 }
