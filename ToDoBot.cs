@@ -23,13 +23,6 @@ namespace ToDoBot
             Logger = logger;
         }
 
-        public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            await base.OnTurnAsync(turnContext, cancellationToken);
-
-            await ConversationState.SaveChangesAsync(turnContext, false, cancellationToken);
-        }
-
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             Logger.LogInformation("Running dialog with Message Activity.");

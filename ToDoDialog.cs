@@ -3,13 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 
 namespace ToDoBot
 {
     public class ToDoDialog : ComponentDialog
     {
-        public ToDoDialog(ConversationState conversationState)
+        public ToDoDialog()
         {
             var waterfallSteps = new WaterfallStep[]
             {
@@ -21,7 +22,7 @@ namespace ToDoBot
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt)));
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -34,14 +35,19 @@ namespace ToDoBot
         private async Task<DialogTurnResult> RemindTimeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             stepContext.Values["eventDescription"] = (string)stepContext.Result;
-            
-            return await stepContext.PromptAsync(nameof(AttachmentPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(ChoiceTimeCard.GetCard().ToAttachment()) }, cancellationToken);
+            var options = new PromptOptions()
+            {
+                Prompt = MessageFactory.Text("Select the time to remind"),
+                Choices = ChoiceTimeCard.GetCard(),
+                Style = ListStyle.HeroCard
+            };
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), options, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ConfirmationEventStep(WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            DateTime notificationTime = (DateTime)stepContext.Result;
+            DateTime notificationTime = DateTime.Parse(((FoundChoice)stepContext.Result).Value);
             stepContext.Values["remindTime"] = notificationTime;
             string eventDescription = (string) stepContext.Values["eventDescription"];
             string textToResponse =
