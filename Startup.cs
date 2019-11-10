@@ -3,11 +3,13 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio EmptyBot v4.6.2
 
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,6 +36,8 @@ namespace ToDoBot
             services.AddSingleton<ConversationState>();
 
             services.AddSingleton<ToDoDialog>();
+
+            services.AddSingleton<ConcurrentDictionary<string, SavedNotificationModel>>();
 
             services.AddTransient<IBot, ToDoBot<ToDoDialog>>();
         }

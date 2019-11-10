@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -10,8 +11,11 @@ namespace ToDoBot
 {
     public class ToDoDialog : ComponentDialog
     {
-        public ToDoDialog()
+        private readonly ConcurrentDictionary<string, SavedNotificationModel> conversationReferences;
+
+        public ToDoDialog(ConcurrentDictionary<string, SavedNotificationModel> conversationReferences)
         {
+            this.conversationReferences = conversationReferences;
             var waterfallSteps = new WaterfallStep[]
             {
                 EventDescriptionStepAsync,
@@ -49,7 +53,7 @@ namespace ToDoBot
         {
             DateTime notificationTime = DateTime.Parse(((FoundChoice)stepContext.Result).Value);
             stepContext.Values["remindTime"] = notificationTime;
-            string eventDescription = (string) stepContext.Values["eventDescription"];
+            string eventDescription = (string)stepContext.Values["eventDescription"];
             string textToResponse =
                 $"Are you sure you want to get notification about: {eventDescription} in {notificationTime:F}";
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text(textToResponse) }, cancellationToken);
@@ -57,16 +61,30 @@ namespace ToDoBot
 
         private async Task<DialogTurnResult> EndOfDialogStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if ((bool) stepContext.Result)
+            if ((bool)stepContext.Result)
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("Thanks. Notification has been successfully saved."), cancellationToken);
+
+                var conversationReference = stepContext.Context.Activity.GetConversationReference();
+                var description = (string)stepContext.Values["eventDescription"];
+                var remindTime = (DateTime)stepContext.Values["remindTime"];
+                var notificationModel = new SavedNotificationModel
+                {
+                    EventDescription = description,
+                    RemindTime = remindTime,
+                    ConversationReference = conversationReference
+                };
+
+                stepContext.ActiveDialog.State.TryGetValue("instanceId", out object instanceId);
+                this.conversationReferences.AddOrUpdate((string)instanceId, notificationModel,
+                    (key, newValue) => notificationModel);
                 return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
             }
             else
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("Notification was discarded."), cancellationToken);
                 return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
-            }    
+            }
         }
     }
 }
