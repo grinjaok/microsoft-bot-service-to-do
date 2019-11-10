@@ -11,6 +11,11 @@ namespace ToDoBot
         {
             return new List<Choice>
             {
+                new Choice(DateTime.UtcNow.AddMinutes(2).ToString("F"))
+                {
+                    Action =  new CardAction(ActionTypes.ImBack, title: "In 2 minutes",
+                        value: DateTime.UtcNow.AddMinutes(2).ToString("F")),
+                },
                 new Choice(DateTime.UtcNow.AddMinutes(5).ToString("F"))
                 {
                     Action =  new CardAction(ActionTypes.ImBack, title: "In 5 minutes",
