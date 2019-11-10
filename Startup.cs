@@ -27,11 +27,15 @@ namespace ToDoBot
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
-            // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, EmptyBot>();
+            services.AddSingleton<IStorage, MemoryStorage>();
+
+            services.AddSingleton<ConversationState>();
+
+            services.AddSingleton<ToDoDialog>();
+
+            services.AddTransient<IBot, ToDoBot<ToDoDialog>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

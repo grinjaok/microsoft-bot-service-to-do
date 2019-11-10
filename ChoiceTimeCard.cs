@@ -13,8 +13,8 @@ namespace ToDoBot
                 Text = "when to remind you?",
                 Buttons = new List<CardAction>
                 {
-                    new CardAction(ActionTypes.ImBack, title: "In 5 minutes", value: DateTime.UtcNow.AddMinutes(5)),
-                    new CardAction(ActionTypes.ImBack, "Tomorrow the same time", value: DateTime.UtcNow.AddDays(1))
+                    new CardAction(ActionTypes.ImBack, title: "In 5 minutes", value: DateTime.UtcNow.AddMinutes(5).ToString("F")),
+                    new CardAction(ActionTypes.ImBack, "Tomorrow the same time", value: DateTime.UtcNow.AddDays(1).ToString("F"))
                 }
             };
         }
