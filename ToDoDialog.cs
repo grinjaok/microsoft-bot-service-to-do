@@ -6,6 +6,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
+using Microsoft.Recognizers.Text;
 
 namespace ToDoBot
 {
@@ -26,8 +27,8 @@ namespace ToDoBot
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
-            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)) { DefaultLocale= Culture.English });
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)) { DefaultLocale= Culture.English });
             InitialDialogId = nameof(WaterfallDialog);
         }
 
@@ -48,8 +49,7 @@ namespace ToDoBot
             return await stepContext.PromptAsync(nameof(ChoicePrompt), options, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> ConfirmationEventStep(WaterfallStepContext stepContext,
-            CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> ConfirmationEventStep(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             DateTime notificationTime = DateTime.Parse(((FoundChoice)stepContext.Result).Value);
             stepContext.Values["remindTime"] = notificationTime;

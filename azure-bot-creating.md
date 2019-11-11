@@ -10,5 +10,16 @@
 7. Make ConcurrentDictionary as a cache storage and register it.
 8. Create NotifyController with sending a proactive message logic.
 9. Create Azure Function with timer trigger.
-
-
+10. Login to Azure CLI and enter subscription Id
+11. Create Azure app:
+    az ad app create --display-name "application-name" --password "password123" --available-to-other-tenants
+    Need to get copy appId
+12. Create Web app:
+    az deployment create --name "azure-bot-deplyment" --template-file "./DeploymentTemplates/template-with-new-rg.json" --location "West Europe" --parameters appId="APP_ID_FROM_PREVIOUS_STEP" appSecret="password123" botId="azure-service-bot-app" botSku=F0 newAppServicePlanName="azure-bot-service-plan" newWebAppName="azure-bot-web-app" groupName="azure-bot-group" groupLocation="West Europe" newAppServicePlanLocation="West Europe"
+13. Prepere you code for deploying
+    az bot prepare-deploy --lang Csharp --code-dir "." --proj-file-path "YOUR_BOT_NAME.csproj"
+14. Deploy code to Azure
+    az webapp deployment source config-zip --resource-group "azure-bot-group" --name "azure-bot-web-app" --src "YOUR_ARCHIVE_NAME.zip"
+    Note: it should has only zip extension
+15. Get telegram bot token and add it to Azure Bot Service
+16. Deploy Azure function with timer trigger. Add bot notification endpoint to it.
