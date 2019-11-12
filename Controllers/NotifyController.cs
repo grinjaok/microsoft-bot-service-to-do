@@ -14,13 +14,19 @@ namespace ToDoBot.Controllers
     {
         private readonly IBotFrameworkHttpAdapter adapter;
         private readonly ConcurrentDictionary<string, SavedNotificationModel> savedNotifications;
+        private readonly string appId;
         private string messageToSend;
 
         public NotifyController(IBotFrameworkHttpAdapter adapter, IConfiguration configuration,
             ConcurrentDictionary<string, SavedNotificationModel> savedNotifications)
         {
             this.adapter = adapter;
+            this.appId = configuration.GetValue<string>("AppId");
             this.savedNotifications = savedNotifications;
+            if (string.IsNullOrEmpty(appId))
+            {
+                this.appId = Guid.NewGuid().ToString();
+            }
         }
 
         [HttpGet]
@@ -33,7 +39,7 @@ namespace ToDoBot.Controllers
             {
                 this.messageToSend = savedNotification.Value.EventDescription;
                 this.savedNotifications.TryRemove(savedNotification.Key, out SavedNotificationModel value);
-                await ((BotAdapter) adapter).ContinueConversationAsync(Guid.NewGuid().ToString(), savedNotification.Value.ConversationReference,
+                await ((BotAdapter) adapter).ContinueConversationAsync(this.appId, savedNotification.Value.ConversationReference,
                     BotCallback,
                     default(CancellationToken));
             }

@@ -23,3 +23,4 @@
     Note: it should has only zip extension
 15. Get telegram bot token and add it to Azure Bot Service
 16. Deploy Azure function with timer trigger. Add bot notification endpoint to it.
+17. Need to add Bot Application Id to Web App Application settings.
