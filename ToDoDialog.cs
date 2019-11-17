@@ -21,7 +21,7 @@ namespace ToDoBot
             {
                 EventDescriptionStepAsync,
                 RemindTimeStepAsync,
-                ConfirmationEventStep,
+                ConfirmationEventStepAsync,
                 EndOfDialogStepAsync
             };
 
@@ -34,7 +34,8 @@ namespace ToDoBot
 
         private static async Task<DialogTurnResult> EventDescriptionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text("Please enter event description.") }, cancellationToken);
+            var promptOptions = new PromptOptions {Prompt = MessageFactory.Text("Please enter event description.")};
+            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
         }
 
         private async Task<DialogTurnResult> RemindTimeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -49,22 +50,21 @@ namespace ToDoBot
             return await stepContext.PromptAsync(nameof(ChoicePrompt), options, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> ConfirmationEventStep(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> ConfirmationEventStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             DateTime notificationTime = DateTime.Parse(((FoundChoice)stepContext.Result).Value);
             stepContext.Values["remindTime"] = notificationTime;
             string eventDescription = (string)stepContext.Values["eventDescription"];
             string textToResponse =
                 $"Are you sure you want to get notification about: {eventDescription} in {notificationTime:F}";
-            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text(textToResponse) }, cancellationToken);
+            var promptOptions = new PromptOptions { Prompt = MessageFactory.Text(textToResponse) };
+            return await stepContext.PromptAsync(nameof(ConfirmPrompt), promptOptions, cancellationToken);
         }
 
         private async Task<DialogTurnResult> EndOfDialogStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if ((bool)stepContext.Result)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("Thanks. Notification has been successfully saved."), cancellationToken);
-
                 var conversationReference = stepContext.Context.Activity.GetConversationReference();
                 var description = (string)stepContext.Values["eventDescription"];
                 var remindTime = (DateTime)stepContext.Values["remindTime"];
@@ -78,6 +78,8 @@ namespace ToDoBot
                 stepContext.ActiveDialog.State.TryGetValue("instanceId", out object instanceId);
                 this.conversationReferences.AddOrUpdate((string)instanceId, notificationModel,
                     (key, newValue) => notificationModel);
+
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("Thanks. Notification has been successfully saved."), cancellationToken);
                 return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
             }
             else
