@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoBot", "ToDoBot.csproj", "{90156670-B87C-4BBC-B1FC-3667DD4170A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoBot", "ToDoBot\ToDoBot.csproj", "{8318CC22-7014-44C5-89D7-16050BC2F2EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotNotificationFunction", "..\BotNotificationFunction\BotNotificationFunction.csproj", "{88EB0F66-423F-488B-AC8F-FB73AB79CC64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotTimerFunction", "BotTimerFunction\BotTimerFunction.csproj", "{21B2DAF6-599D-4F55-8AE6-6034396D60BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{90156670-B87C-4BBC-B1FC-3667DD4170A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90156670-B87C-4BBC-B1FC-3667DD4170A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90156670-B87C-4BBC-B1FC-3667DD4170A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90156670-B87C-4BBC-B1FC-3667DD4170A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88EB0F66-423F-488B-AC8F-FB73AB79CC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88EB0F66-423F-488B-AC8F-FB73AB79CC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88EB0F66-423F-488B-AC8F-FB73AB79CC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88EB0F66-423F-488B-AC8F-FB73AB79CC64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8318CC22-7014-44C5-89D7-16050BC2F2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8318CC22-7014-44C5-89D7-16050BC2F2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8318CC22-7014-44C5-89D7-16050BC2F2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8318CC22-7014-44C5-89D7-16050BC2F2EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21B2DAF6-599D-4F55-8AE6-6034396D60BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B2DAF6-599D-4F55-8AE6-6034396D60BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B2DAF6-599D-4F55-8AE6-6034396D60BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B2DAF6-599D-4F55-8AE6-6034396D60BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
