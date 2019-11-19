@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,13 +34,14 @@ namespace ToDoBot.Controllers
         [Route("api/notify")]
         public async Task<IActionResult> NotifyTimeCheck()
         {
-            var notificationsToSend = savedNotifications.Where(x =>
-                x.Value.RemindTime > DateTime.UtcNow && x.Value.RemindTime < DateTime.UtcNow.AddMinutes(1));
-            foreach (var savedNotification in notificationsToSend)
+            var nextEvents = this.GetNextEvents();
+            foreach (var savedNotification in nextEvents)
             {
                 this.messageToSend = savedNotification.Value.EventDescription;
                 this.savedNotifications.TryRemove(savedNotification.Key, out SavedNotificationModel value);
-                await ((BotAdapter) adapter).ContinueConversationAsync(this.appId, savedNotification.Value.ConversationReference,
+                await ((BotAdapter) adapter).ContinueConversationAsync(
+                    this.appId,
+                    savedNotification.Value.ConversationReference,
                     BotCallback,
                     default(CancellationToken));
             }
@@ -50,6 +52,12 @@ namespace ToDoBot.Controllers
         private async Task BotCallback(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             await turnContext.SendActivityAsync(this.messageToSend);
+        }
+
+        private IEnumerable<KeyValuePair<string, SavedNotificationModel>> GetNextEvents()
+        {
+            return savedNotifications.Where(x =>
+                x.Value.RemindTime > DateTime.UtcNow && x.Value.RemindTime < DateTime.UtcNow.AddMinutes(1));
         }
     }
 }
